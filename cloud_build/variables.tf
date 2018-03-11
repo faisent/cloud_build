@@ -2,6 +2,11 @@ variable "resource_group" {
   description = "The name of the resource group in which to create the virtual network."
 }
 
+variable "subscription_id" {
+  description = "The subscription ID for this deploy"
+  default = "39ac48fb-fea0-486a-ba84-e0ae9b06c663"
+}
+
 variable "location" {
   description = "The location/region where the virtual network is created. Changing this forces a new resource to be created."
   default     = "eastus"

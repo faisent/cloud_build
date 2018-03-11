@@ -1,9 +1,9 @@
-# provider "azurerm" {
-#   subscription_id = "REPLACE-WITH-YOUR-SUBSCRIPTION-ID"
+ provider "azurerm" {
+   subscription_id = "${var.subscription_id}"
 #   client_id       = "REPLACE-WITH-YOUR-CLIENT-ID"
 #   client_secret   = "REPLACE-WITH-YOUR-CLIENT-SECRET"
 #   tenant_id       = "REPLACE-WITH-YOUR-TENANT-ID"
-# }
+ }
 
 resource "azurerm_resource_group" "rg" {
   name     = "${var.resource_group}"
@@ -31,21 +31,21 @@ resource "azurerm_subnet" "backend_subnet" {
   address_prefix       = "10.1.0.128/25"
 }
 
-resource "azurerm_network_interface" "nic" {
-  name                = "${var.rg_prefix}nic"
+resource "azurerm_network_interface" "app_nic" {
+  name                = "${var.rg_prefix}app_nic"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
 
   ip_configuration {
     name                          = "${var.rg_prefix}ipconfig"
-    subnet_id                     = "/subscriptions/39ac48fb-fea0-486a-ba84-e0ae9b06c663/resourceGroups/sean_terraform_testing/providers/Microsoft.Network/virtualNetworks/sean_terraform_testingvnet/subnets/app_subnet"
+    subnet_id                     = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group}/providers/Microsoft.Network/virtualNetworks/${var.resource_group}vnet/subnets/app_subnet"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.pip.id}"
+    public_ip_address_id          = "${azurerm_public_ip.app_pip.id}"
   }
 }
 
-resource "azurerm_public_ip" "pip" {
-  name                         = "${var.rg_prefix}-ip"
+resource "azurerm_public_ip" "app_pip" {
+  name                         = "${var.rg_prefix}app-ip"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.rg.name}"
   public_ip_address_allocation = "Dynamic"
@@ -60,7 +60,7 @@ resource "azurerm_storage_account" "stor" {
   account_replication_type = "${var.storage_replication_type}"
 }
 
-resource "azurerm_managed_disk" "datadisk" {
+resource "azurerm_managed_disk" "app_datadisk" {
   name                 = "${var.hostname}-datadisk"
   location             = "${var.location}"
   resource_group_name  = "${azurerm_resource_group.rg.name}"
@@ -69,12 +69,12 @@ resource "azurerm_managed_disk" "datadisk" {
   disk_size_gb         = "1023"
 }
 
-resource "azurerm_virtual_machine" "vm" {
-  name                  = "${var.rg_prefix}vm"
+resource "azurerm_virtual_machine" "app_vm" {
+  name                  = "${var.rg_prefix}app_vm"
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.rg.name}"
   vm_size               = "${var.vm_size}"
-  network_interface_ids = ["${azurerm_network_interface.nic.id}"]
+  network_interface_ids = ["${azurerm_network_interface.app_nic.id}"]
 
   storage_image_reference {
     publisher = "${var.image_publisher}"
@@ -92,7 +92,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   storage_data_disk {
     name              = "${var.hostname}-datadisk"
-    managed_disk_id   = "${azurerm_managed_disk.datadisk.id}"
+    managed_disk_id   = "${azurerm_managed_disk.app_datadisk.id}"
     managed_disk_type = "Standard_LRS"
     disk_size_gb      = "1023"
     create_option     = "Attach"
