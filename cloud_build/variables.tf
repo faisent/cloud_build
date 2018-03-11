@@ -71,7 +71,7 @@ variable "image_offer" {
 
 variable "image_sku" {
   description = "image sku to apply (az vm image list)"
-  default     = "7.3"
+  default     = "6.9"
 }
 
 variable "image_version" {
