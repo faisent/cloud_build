@@ -35,6 +35,7 @@ resource "azurerm_network_interface" "app_nic" {
   name                = "${var.rg_prefix}app_nic"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
+  depends_on          = ["azurerm_subnet.app_subnet"]
 
   ip_configuration {
     name                          = "${var.rg_prefix}ipconfig"
@@ -48,6 +49,7 @@ resource "azurerm_network_interface" "db_nic" {
   name                = "${var.rg_prefix}db_nic"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
+  depends_on          = ["azurerm_subnet.backend_subnet"]
 
   ip_configuration {
     name                          = "${var.rg_prefix}ipconfig"
