@@ -21,6 +21,10 @@ variable "hostname" {
   description = "VM name referenced also in storage-related names."
 }
 
+variable "db_hostname" {
+  description = "VM name referenced also in storage-related names."
+}
+
 variable "dns_name" {
   description = " Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
 }
@@ -57,17 +61,17 @@ variable "vm_size" {
 
 variable "image_publisher" {
   description = "name of the publisher of the image (az vm image list)"
-  default     = "Canonical"
+  default     = "OpenLogic"
 }
 
 variable "image_offer" {
   description = "the name of the offer (az vm image list)"
-  default     = "UbuntuServer"
+  default     = "CentOS"
 }
 
 variable "image_sku" {
   description = "image sku to apply (az vm image list)"
-  default     = "16.04-LTS"
+  default     = "7.3"
 }
 
 variable "image_version" {
