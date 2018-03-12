@@ -28,11 +28,11 @@
       state: latest
   - name: copy up httpd.conf
     template:
-      src: /Users/Sean/azure/git/configs/httpd.conf
+      src: ../configs/httpd.conf
       dest: /etc/httpd/conf/httpd.conf
   - name: copy up bugzilla config
     template:
-      src: /Users/Sean/azure/git/configs/localconfig
+      src: ../configs/localconfig
       dest: /etc/bugzilla/localconfig
   - name: start up httpd
     service:

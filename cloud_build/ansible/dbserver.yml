@@ -16,7 +16,7 @@
       state: latest
   - name: copy up the base database
     copy:
-      src: /Users/Sean/azure/git/configs/alldb.sql
+      src: ../configs/alldb.sql
       dest: /tmp/alldb.sql
   - name: get restore module
     yum:
@@ -29,5 +29,9 @@
       target: /tmp/alldb.sql
       login_user: root
       login_password: 
-  - name: clear up privileges
-    command: /usr/bin/mysql -u root < "FLUSH PRIVILEGES; quit"
+  - name: upload user fix script
+    copy: 
+      src: ../configs/addbugs.sql
+      dest: /tmp/addbugs.sql
+  - name: run it
+    shell: /usr/bin/mysql -u root < /tmp/addbugs.sql

@@ -1,0 +1,2 @@
+FLUSH PRIVILEGES;
+quit
