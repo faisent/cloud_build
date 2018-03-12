@@ -133,10 +133,10 @@ resource "azurerm_virtual_machine" "app_vm" {
     disable_password_authentication = false
   }
 
-  boot_diagnostics {
-    enabled     = false
+#  boot_diagnostics {
+#    enabled     = false
 #    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
-  }
+#  }
 }
 
 resource "azurerm_virtual_machine" "db_vm" {
@@ -179,8 +179,8 @@ resource "azurerm_virtual_machine" "db_vm" {
     disable_password_authentication = false
   }
 
-  boot_diagnostics {
-    enabled     = false
+#  boot_diagnostics {
+#    enabled     = false
 #    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
-  }
+#  }
 }
