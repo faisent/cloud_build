@@ -12,21 +12,29 @@ variable "location" {
   default     = "eastus"
 }
 
+variable "whatsmyip" {
+  description = "Get your TF/hopefully ansible host's PIP and put here, used for allowing ssh to the nodes"
+}
+
 variable "rg_prefix" {
   description = "The shortened abbreviation to represent your resource group that will go on the front of some resources."
   default     = "stt"
 }
 
 variable "hostname" {
-  description = "VM name referenced also in storage-related names."
+  description = "VM name for the webserver, as I nixed boot diags doesn't have to be storage account friendly"
 }
 
 variable "db_hostname" {
-  description = "VM name referenced also in storage-related names."
+  description = "VM name for the db host"
 }
 
 variable "dns_name" {
-  description = " Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
+  description = "Label for the Domain Name. Specifically for the bugzilla frontend"
+}
+
+variable "dns_name_db" {
+  description = "Label for the Domain Name. Specifically for the database, no I don't like having a public db either, but still in test-mode"
 }
 
 variable "virtual_network_name" {
@@ -39,19 +47,14 @@ variable "address_space" {
   default     = "10.1.0.0/24"
 }
 
-variable "subnet_prefix" {
+variable "subnet_prefix_app" {
   description = "The address prefix to use for the subnet."
-  default     = "10.1.0.0/24"
+  default     = "10.1.0.0/25"
 }
 
-variable "storage_account_tier" {
-  description = "Defines the Tier of storage account to be created. Valid options are Standard and Premium."
-  default     = "Standard"
-}
-
-variable "storage_replication_type" {
-  description = "Defines the Replication Type to use for this storage account. Valid options include LRS, GRS etc."
-  default     = "LRS"
+variable "subnet_prefix_backend" {
+  description = "The address prefix to use for the subnet."
+  default     = "10.1.0.128/25"
 }
 
 variable "vm_size" {
@@ -84,6 +87,6 @@ variable "admin_username" {
   default     = "vmadmin"
 }
 
-variable "admin_password" {
-  description = "administrator password (recommended to disable password auth)"
+variable "public_key" {
+  description = "put your public key data here"
 }
