@@ -67,31 +67,31 @@ resource "azurerm_public_ip" "app_pip" {
   domain_name_label            = "${var.dns_name}"
 }
 
-resource "azurerm_storage_account" "stor" {
-  name                     = "${var.dns_name}stor"
-  location                 = "${var.location}"
-  resource_group_name      = "${azurerm_resource_group.rg.name}"
-  account_tier             = "${var.storage_account_tier}"
-  account_replication_type = "${var.storage_replication_type}"
-}
+#resource "azurerm_storage_account" "stor" {
+#  name                     = "${var.dns_name}stor"
+#  location                 = "${var.location}"
+#  resource_group_name      = "${azurerm_resource_group.rg.name}"
+#  account_tier             = "${var.storage_account_tier}"
+#  account_replication_type = "${var.storage_replication_type}"
+#}
 
-resource "azurerm_managed_disk" "app_datadisk" {
-  name                 = "${var.hostname}-datadisk"
-  location             = "${var.location}"
-  resource_group_name  = "${azurerm_resource_group.rg.name}"
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "1023"
-}
+#resource "azurerm_managed_disk" "app_datadisk" {
+#  name                 = "${var.hostname}-datadisk"
+#  location             = "${var.location}"
+#  resource_group_name  = "${azurerm_resource_group.rg.name}"
+#  storage_account_type = "Standard_LRS"
+#  create_option        = "Empty"
+#  disk_size_gb         = "1023"
+#}
 
-resource "azurerm_managed_disk" "db_datadisk" {
-  name                 = "${var.db_hostname}-datadisk"
-  location             = "${var.location}"
-  resource_group_name  = "${azurerm_resource_group.rg.name}"
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "1023"
-}
+#resource "azurerm_managed_disk" "db_datadisk" {
+#  name                 = "${var.db_hostname}-datadisk"
+#  location             = "${var.location}"
+#  resource_group_name  = "${azurerm_resource_group.rg.name}"
+#  storage_account_type = "Standard_LRS"
+#  create_option        = "Empty"
+#  disk_size_gb         = "1023"
+#}
 
 resource "azurerm_virtual_machine" "app_vm" {
   name                  = "${var.rg_prefix}app_vm"
@@ -114,14 +114,14 @@ resource "azurerm_virtual_machine" "app_vm" {
     create_option     = "FromImage"
   }
 
-  storage_data_disk {
-    name              = "${var.hostname}-datadisk"
-    managed_disk_id   = "${azurerm_managed_disk.app_datadisk.id}"
-    managed_disk_type = "Standard_LRS"
-    disk_size_gb      = "1023"
-    create_option     = "Attach"
-    lun               = 0
-  }
+#  storage_data_disk {
+#    name              = "${var.hostname}-datadisk"
+#    managed_disk_id   = "${azurerm_managed_disk.app_datadisk.id}"
+#    managed_disk_type = "Standard_LRS"
+#    disk_size_gb      = "1023"
+#    create_option     = "Attach"
+#    lun               = 0
+#  }
 
   os_profile {
     computer_name  = "${var.hostname}"
@@ -134,8 +134,8 @@ resource "azurerm_virtual_machine" "app_vm" {
   }
 
   boot_diagnostics {
-    enabled     = true
-    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
+    enabled     = false
+#    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
   }
 }
 
@@ -160,14 +160,14 @@ resource "azurerm_virtual_machine" "db_vm" {
     create_option     = "FromImage"
   }
 
-  storage_data_disk {
-    name              = "${var.db_hostname}-datadisk"
-    managed_disk_id   = "${azurerm_managed_disk.db_datadisk.id}"
-    managed_disk_type = "Standard_LRS"
-    disk_size_gb      = "1023"
-    create_option     = "Attach"
-    lun               = 0
-  }
+#  storage_data_disk {
+#    name              = "${var.db_hostname}-datadisk"
+#    managed_disk_id   = "${azurerm_managed_disk.db_datadisk.id}"
+#    managed_disk_type = "Standard_LRS"
+#    disk_size_gb      = "1023"
+#    create_option     = "Attach"
+#    lun               = 0
+#  }
 
   os_profile {
     computer_name  = "${var.db_hostname}"
@@ -180,7 +180,7 @@ resource "azurerm_virtual_machine" "db_vm" {
   }
 
   boot_diagnostics {
-    enabled     = true
-    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
+    enabled     = false
+#    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
   }
 }
