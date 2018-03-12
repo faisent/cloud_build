@@ -1,0 +1,42 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: install apache
+    yum:
+      name: httpd
+      state: latest
+  - name: install bugzilla dps1
+    yum:
+      name: perl-DBD-mysql
+      state: latest
+  - name: install bugzilla dps2
+    yum:
+      name: epel-release
+      state: latest
+  - name: install mysql client
+    yum:
+      name: mysql
+      state: latest
+  - name: install bugzilla after depends
+    yum:
+      name: bugzilla
+      state: latest
+  - name: selinux dps for copy
+    yum:
+      name: libselinux-python
+      state: latest
+  - name: copy up httpd.conf
+    template:
+      src: /Users/Sean/azure/git/configs/httpd.conf
+      dest: /etc/httpd/conf/httpd.conf
+  - name: copy up bugzilla config
+    template:
+      src: /Users/Sean/azure/git/configs/localconfig
+      dest: /etc/bugzilla/localconfig
+  - name: start up httpd
+    service:
+      name: httpd
+      state: restarted
+  - name: finalize bugzilla config
+    command: /usr/share/bugzilla/checksetup.pl

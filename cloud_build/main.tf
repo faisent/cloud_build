@@ -130,6 +130,7 @@ resource "azurerm_network_security_rule" "default_deny_db" {
   resource_group_name         = "${var.resource_group}"
   network_security_group_name = "${azurerm_network_security_group.bug_db_nsg.name}"
 }
+
 resource "azurerm_network_interface" "app_nic" {
   name                = "${var.rg_prefix}app_nic"
   location            = "${var.location}"
@@ -138,7 +139,6 @@ resource "azurerm_network_interface" "app_nic" {
 
   ip_configuration {
     name                          = "${var.rg_prefix}ipconfig"
-#    subnet_id                     = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group}/providers/Microsoft.Network/virtualNetworks/${var.resource_group}vnet/subnets/app_subnet"
     subnet_id                     = "${azurerm_subnet.app_subnet.id}"
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.1.0.40"
@@ -154,7 +154,6 @@ resource "azurerm_network_interface" "db_nic" {
 
   ip_configuration {
     name                          = "${var.rg_prefix}ipconfig"
-#    subnet_id                     = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group}/providers/Microsoft.Network/virtualNetworks/${var.resource_group}vnet/subnets/backend_subnet"
     subnet_id                     = "${azurerm_subnet.backend_subnet.id}"
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.1.0.140"
@@ -178,32 +177,6 @@ resource "azurerm_public_ip" "db_pip" {
   domain_name_label            = "${var.dns_name_db}"
 }
 
-#resource "azurerm_storage_account" "stor" {
-#  name                     = "${var.dns_name}stor"
-#  location                 = "${var.location}"
-#  resource_group_name      = "${azurerm_resource_group.rg.name}"
-#  account_tier             = "${var.storage_account_tier}"
-#  account_replication_type = "${var.storage_replication_type}"
-#}
-
-#resource "azurerm_managed_disk" "app_datadisk" {
-#  name                 = "${var.hostname}-datadisk"
-#  location             = "${var.location}"
-#  resource_group_name  = "${azurerm_resource_group.rg.name}"
-#  storage_account_type = "Standard_LRS"
-#  create_option        = "Empty"
-#  disk_size_gb         = "1023"
-#}
-
-#resource "azurerm_managed_disk" "db_datadisk" {
-#  name                 = "${var.db_hostname}-datadisk"
-#  location             = "${var.location}"
-#  resource_group_name  = "${azurerm_resource_group.rg.name}"
-#  storage_account_type = "Standard_LRS"
-#  create_option        = "Empty"
-#  disk_size_gb         = "1023"
-#}
-
 resource "azurerm_virtual_machine" "app_vm" {
   name                  = "${var.rg_prefix}app_vm"
   location              = "${var.location}"
@@ -225,15 +198,6 @@ resource "azurerm_virtual_machine" "app_vm" {
     create_option     = "FromImage"
   }
 
-#  storage_data_disk {
-#    name              = "${var.hostname}-datadisk"
-#    managed_disk_id   = "${azurerm_managed_disk.app_datadisk.id}"
-#    managed_disk_type = "Standard_LRS"
-#    disk_size_gb      = "1023"
-#    create_option     = "Attach"
-#    lun               = 0
-#  }
-
   os_profile {
     computer_name  = "${var.hostname}"
     admin_username = "${var.admin_username}"
@@ -243,16 +207,9 @@ resource "azurerm_virtual_machine" "app_vm" {
     disable_password_authentication = true
     ssh_keys {
       path = "/home/${var.admin_username}/.ssh/authorized_keys"
-#      key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiQwpJnHVGKv8pgGtXJ0s6RIVdi1P10XsSIAnHMWsqzV3qdR0b2LXr1/KSj3OtUx3i8b018d7ml7t7tH9Bfr1+6tl5pOWD/d563FaY1QxYxKxcmwPUq1JZ9xq6iJ/mW5KHBdu11lLETcbMFOBWyqsp2aLiEHYCZwkp8zxjxfqWqf+gZCVcbfCp6Xn9YggGze/dVCV5fRD0BB88J+Rf5okGxjJW7nt/3uQZJoEWzauG+QdMhCNeBLyWBmEAyi1/wNv4GQhhp9xtJoMfwxvEQaiW6h2amFDhQNCKPODqVphFtTYIAX8wXp910OKccJY8WD3wPKJ1+X89PNBSxK6BU8Vh vmadmin" 
       key_data = "${var.public_key}"
     }
  }
-
-
-#  boot_diagnostics {
-#    enabled     = false
-#    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
-#  }
 }
 
 resource "azurerm_virtual_machine" "db_vm" {
@@ -276,32 +233,16 @@ resource "azurerm_virtual_machine" "db_vm" {
     create_option     = "FromImage"
   }
 
-#  storage_data_disk {
-#    name              = "${var.db_hostname}-datadisk"
-#    managed_disk_id   = "${azurerm_managed_disk.db_datadisk.id}"
-#    managed_disk_type = "Standard_LRS"
-#    disk_size_gb      = "1023"
-#    create_option     = "Attach"
-#    lun               = 0
-#  }
-
   os_profile {
     computer_name  = "${var.db_hostname}"
     admin_username = "${var.admin_username}"
-#    admin_password = "${var.admin_password}"
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
       path = "/home/${var.admin_username}/.ssh/authorized_keys"
-#      key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiQwpJnHVGKv8pgGtXJ0s6RIVdi1P10XsSIAnHMWsqzV3qdR0b2LXr1/KSj3OtUx3i8b018d7ml7t7tH9Bfr1+6tl5pOWD/d563FaY1QxYxKxcmwPUq1JZ9xq6iJ/mW5KHBdu11lLETcbMFOBWyqsp2aLiEHYCZwkp8zxjxfqWqf+gZCVcbfCp6Xn9YggGze/dVCV5fRD0BB88J+Rf5okGxjJW7nt/3uQZJoEWzauG+QdMhCNeBLyWBmEAyi1/wNv4GQhhp9xtJoMfwxvEQaiW6h2amFDhQNCKPODqVphFtTYIAX8wXp910OKccJY8WD3wPKJ1+X89PNBSxK6BU8Vh vmadmin" 
       key_data = "${var.public_key}"
     }
  }
-
-#  boot_diagnostics {
-#    enabled     = false
-#    storage_uri = "${azurerm_storage_account.stor.primary_blob_endpoint}"
-#  }
 }

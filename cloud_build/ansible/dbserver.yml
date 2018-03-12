@@ -1,0 +1,33 @@
+---
+- hosts: dbservers
+  become: true
+  tasks:
+  - name: install mysql-server
+    yum: 
+      name: mysql-server
+      state: latest
+  - name: start it
+    service:
+      name: mysqld
+      state: restarted
+  - name: selinux dps for copy
+    yum:
+      name: libselinux-python
+      state: latest
+  - name: copy up the base database
+    copy:
+      src: /Users/Sean/azure/git/configs/alldb.sql
+      dest: /tmp/alldb.sql
+  - name: get restore module
+    yum:
+      name: MySQL-python
+      state: latest
+  - name: restore database
+    mysql_db:
+      name: all
+      state: import
+      target: /tmp/alldb.sql
+      login_user: root
+      login_password: 
+  - name: clear up privileges
+    command: /usr/bin/mysql -u root < "FLUSH PRIVILEGES; quit"

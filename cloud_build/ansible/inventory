@@ -1,0 +1,5 @@
+[webservers]
+sttappvm01.eastus.cloudapp.azure.com
+
+[dbservers]
+sttdbvm01.eastus.cloudapp.azure.com
