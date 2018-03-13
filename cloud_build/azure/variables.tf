@@ -1,15 +1,25 @@
+variable "client_id" { 
+  description = "Specify a clientID with enough privileges to create resource-groups, vnets, nsgs, nodes, and pips"
+}
+
+variable "client_secret" {
+  description = "Your auth token"
+}
+
+variable "tenant_id" {
+  description = "Your tenant_id"
+}
+
 variable "resource_group" {
   description = "The name of the resource group in which to create the virtual network."
 }
 
 variable "subscription_id" {
   description = "The subscription ID for this deploy"
-  default = "39ac48fb-fea0-486a-ba84-e0ae9b06c663"
 }
 
 variable "location" {
   description = "The location/region where the virtual network is created. Changing this forces a new resource to be created."
-  default     = "eastus"
 }
 
 variable "whatsmyip" {
@@ -18,7 +28,6 @@ variable "whatsmyip" {
 
 variable "rg_prefix" {
   description = "The shortened abbreviation to represent your resource group that will go on the front of some resources."
-  default     = "stt"
 }
 
 variable "hostname" {
@@ -39,7 +48,6 @@ variable "dns_name_db" {
 
 variable "virtual_network_name" {
   description = "The name for the virtual network."
-  default     = "vnet"
 }
 
 variable "address_space" {
