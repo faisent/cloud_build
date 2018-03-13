@@ -1,5 +1,5 @@
 # cloud_build
-small POC stack deploy in AWS/Azure using Terraform, not really for public consumption
+small POC stack deploy in Azure using Terraform, not really for public consumption
 
 Usage (for Azure)
 
@@ -11,7 +11,8 @@ Usage (for Azure)
    
    switch to the ansible dir; edit your inventory file to reflect what you just built
 
-IMPORTANT RUN dbserver setup before application server setup or things will fail when bugzilla tries to connect to the db.
+IMPORTANT run dbserver setup before application server setup or things will fail when bugzilla tries to connect to the db.
 
    ansible-playbook -i inventory -u vmadmin --key-file <keyfile> dbserver.yml
+   
    ansible-playbook -i inventory -u vmadmin --key-file <keyfile> webserver.yml
